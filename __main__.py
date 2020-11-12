@@ -9,7 +9,7 @@ import time
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--name', default='danscap')
-parser.add_argument('--extension', '--ext', '-e', choices=['mkv', 'gif'], default='mkv')
+parser.add_argument('--extension', '--ext', '-e', choices=['mkv', 'gif'], default='mp4')
 parser.add_argument('--countdown', type=int, default=3)
 parser.add_argument('--framerate', type=int, default=18)
 parser.add_argument('--end-key', default='esc')
