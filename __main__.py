@@ -5,6 +5,7 @@ import os
 import re
 import signal
 import subprocess
+import threading
 import time
 
 parser = argparse.ArgumentParser()
@@ -39,11 +40,24 @@ p = subprocess.Popen([
 
 # listen for esc
 end_key = getattr(keyboard.Key, args.end_key)
-with keyboard.Listener(on_press=lambda key: key != end_key) as listener:
-    listener.join()
+end_key_pressed = False
+
+def listen_for_end_key():
+    def on_press(key):
+        global end_key_pressed
+        if key == end_key:
+            end_key_pressed = True
+    with keyboard.Listener(on_press=on_press) as listener:
+        listener.join()
+
+thread = threading.Thread(target=listen_for_end_key)
+thread.daemon = True
+thread.start()
+while not end_key_pressed: time.sleep(0.01)
 
 # stop recording
 p.send_signal(signal.SIGINT)
+time.sleep(1)
 
 # pop up window for dragging
 subprocess.run(['xdg-open', os.path.dirname(file_name)])
